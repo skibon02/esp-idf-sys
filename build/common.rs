@@ -502,6 +502,11 @@ pub fn sanitize_project_path() -> Result<()> {
 }
 
 pub fn setup_clang_env(path: Option<&Path>) -> Result<()> {
+    // If the user already set LIBCLANG_PATH, respect it and skip auto-detection
+    if std::env::var_os("LIBCLANG_PATH").is_some() {
+        return Ok(());
+    }
+
     if let Some(path) = path {
         // Path was provided, use that instead of relying on the `espup` symlink
         std::env::set_var("LIBCLANG_PATH", path);
